@@ -1,5 +1,6 @@
 from hashlib import sha224
 import sqlite3
+import re
 
 class UserAPI:
 
@@ -63,6 +64,24 @@ class UserAPI:
         except Exception:
             raise Exception("Must specify valid email address or sms number.")
         return sha224(arg.encode()).hexdigest()
+
+    @staticmethod
+    def validate_args(args):
+        """
+        Validate any given input arguments. If any of them are invalid,
+        raise an informative error.
+        """
+        invalidMsgs = []
+        if 'email' in args:
+            if not re.fullmatch(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+', args['email']):
+                invalidMsgs.append("Specified email format is invalid.")
+        if 'sms' in args:
+            if not re.fullmatch(r'\+?[0-9]{7,}', args['sms']):
+                invalidMsgs.append("Specified sms number is invalid.")
+        if 'name' in args:
+            if not re.fullmatch(r'[ A-Za-z\-\']+', args['name']):
+                invalidMsgs.append("Specified name format is invalid.")
+        return ' '.join(invalidMsgs)
 
     def get_users(self, uuid = None):
         """

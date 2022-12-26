@@ -79,6 +79,13 @@ def application(env, start_response):
         args.update(form_data)
 
     try:
+
+        if method in ['PUT', 'POST']:
+            invalidMsg = UserAPI.validate_args(args)
+            if len(invalidMsg):
+                start_response('400 Bad Request', [('Content-Type', 'text/plain')])
+                return invalidMsg
+
         if method == 'PUT':
             wsgi_input = wsgi_input.read()
             args.update(parseAndDelistArguments(wsgi_input))
