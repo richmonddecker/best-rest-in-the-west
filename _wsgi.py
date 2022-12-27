@@ -134,6 +134,6 @@ def formatted_application(env, start_response):
 
 
 if __name__ == '__main__':
-    wsgi_port = 8888
+    wsgi_port = 8000
     print('serving on %s...' % wsgi_port)
     WSGIServer(('', wsgi_port), formatted_application).serve_forever()
