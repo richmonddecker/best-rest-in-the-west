@@ -67,6 +67,10 @@ def application(env, start_response):
 
     wsgi_input = env['wsgi.input']
 
+    if method == 'PUT' and len(path) < 2:
+        start_response('400 Bad Request', [('Content-Type', 'text/plain')])
+        return 'Must include user uuid in a PUT request, to specify which user to modify.'
+
     if wsgi_input.content_length and method != 'PUT':
         post_env = env.copy()
         post_env['QUERY_STRING'] = ''
